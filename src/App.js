@@ -46,38 +46,18 @@ class App {
     let totalDiscount = 0;
     let giftMenu = [];
     let benefitDetails = [];
-    let weekdayDiscount = 0;
-    let weekendDiscount = 0;
 
-    if (date >= 1 && date <= 25) {
-      const discount = 1000 + (date - 1) * 100;
-      totalDiscount += discount;
-      benefitDetails.push({ description: "크리스마스 디데이 할인", amount: discount});
-    }
+    const christmasDiscount = BenefitsCalculator.calculateChristMasDiscount(date);
+    const weekdayDiscount = BenefitsCalculator.calculateWeekdayDiscount(date, order);
+    const weekendDiscount = BenefitsCalculator.calculateWeekendDiscount(date, order);
+    const specialDiscount = BenefitsCalculator.calculateSpecialDiscount(date);
 
-    const dayOfWeek = new Date(2023, 11, date).getDay();
-    if (dayOfWeek >=0 && dayOfWeek <= 4) {
-      weekdayDiscount = order.filter(item => ["초코케이크", "아이스크림"].includes(item.name))
-      .reduce((sum, item) => sum + 2023 * item.quantity, 0);
-    } else if (dayOfWeek === 5 || dayOfWeek === 6) {
-      weekendDiscount = order.filter(item => ["티본스테이크", "바비큐립", "해산물파스타", "크리스마스파스타"].includes(item.name))
-      .reduce((sum, item) => sum + 2023 * item.quantity, 0);
-    }
+    totalDiscount += christmasDiscount + weekdayDiscount + weekendDiscount + specialDiscount;
 
-    totalDiscount += weekdayDiscount + weekendDiscount;
-
-    if (weekdayDiscount > 0) {
-      benefitDetails.push({ description: "평일 할인", amount: weekdayDiscount});
-    } 
-      if (weekendDiscount > 0) {
-        benefitDetails.push({ description: "주말 할인", amount: weekendDiscount});
-      }
-
-    const specialDiscountDays = [3, 10, 17, 24, 25, 31];
-    if (specialDiscountDays.includes(date)) {
-      totalDiscount += 1000;
-      benefitDetails.push({ description: "특별 할인", amount: 1000});
-    }
+    if (christmasDiscount > 0) benefitDetails.push({ description: "크리스마스 디데이 할인", amount: christmasDiscount});
+    if (weekdayDiscount > 0) benefitDetails.push({ description: "평일 할인", amount: weekdayDiscount});
+    if (weekendDiscount > 0) benefitDetails.push({ description: "주말 할인", amount: weekendDiscount});
+    if (specialDiscount > 0) benefitDetails.push({ description: "특별 할인", amount: specialDiscount});
 
     let champagnePrice = 0;
     if (totalAmount >= 120000) {
@@ -86,7 +66,6 @@ class App {
       benefitDetails.push({ description: "증정 이벤트", amount: 25000 });
       totalDiscount += champagnePrice;
     }
-  
 
     let finalAmount = totalAmount - totalDiscount + champagnePrice;
 
