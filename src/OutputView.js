@@ -30,22 +30,22 @@ const OutputView = {
     MissionUtils.Console.print("\n<증정 메뉴>\n");
     if (giftMenu.length === 0) {
       MissionUtils.Console.print("없음");
-    } else {
+      return;
+    } 
       giftMenu.forEach(item => {
-        MissionUtils.Console.print(`${item.name} ${item.quantity}개`);
-      });
-    }
+      MissionUtils.Console.print(`${item.name} ${item.quantity}개`);
+    });
   },
 
   printBenefits(benefitsDetails) {
     MissionUtils.Console.print("<혜택 내역>");
     if (benefitsDetails.length === 0) {
       MissionUtils.Console.print("없음");
-    } else {
+      return;
+    } 
       benefitsDetails.forEach(benefit => {
         MissionUtils.Console.print(`${benefit.description}: -${formatAmount(benefit.amount)}원`);
-      });
-    }
+    });
   },
 
   printTotalBenefitsAmount(totalBenefitsAmount) {
