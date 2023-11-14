@@ -69,12 +69,14 @@ class App {
   
   applyDiscountsAndBenefits(date, order, totalAmount) {
     const discounts = this.calculateAllDiscounts(date, order);
-    const giftMenu = this.calculateGiftMenu(totalAmount);
-    const totalDiscount = discounts.reduce((total, discount) => total + discount.amount, 0);
-    const finalAmount = totalAmount - totalDiscount;
+    let totalDiscount = discounts.reduce((total, discount) => total + discount.amount, 0);
+    const champagneDiscount = this.calculateChampagneDiscount(totalAmount, discounts);
+    totalDiscount += champagneDiscount;
+    
+    const finalAmount = this.calculateFinalAmount(totalAmount, totalDiscount, champagneDiscount);
 
     return {
-      giftMenu: giftMenu,
+      giftMenu: this.calculateGiftMenu(totalAmount),
       benefitDetails: discounts,
       totalBenefitsAmount: totalDiscount,
       finalAmount: finalAmount
@@ -118,6 +120,22 @@ class App {
       giftMenu.push({ name: "샴페인", quantity: 1 });
     }
     return giftMenu;
+  }
+
+  calculateChampagneDiscount(totalAmount, discounts) {
+    if (totalAmount >= 120000) {
+      const champagneDiscount = menuPrices["샴페인"];
+      discounts.push({ description: "샴페인 증정", amount: champagneDiscount });
+      return champagneDiscount
+    }
+    return 0;
+  }
+
+  calculateFinalAmount(totalAmount, totalDiscount, champagneDiscount) {
+    if (champagneDiscount > 0) {
+      return totalAmount - (totalDiscount - champagneDiscount);
+    }
+    return totalAmount - totalDiscount;
   }
 
 }
