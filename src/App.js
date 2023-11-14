@@ -17,18 +17,22 @@ class App {
       const processedOrder = this.processOrder(date, order);
       const benefits = this.calculateBenefits(date, order, processedOrder.totalAmount);
 
-      this.outputView.printIntroduction(date, order);
-      this.outputView.printMenu(processedOrder.menu);
-      this.outputView.printTotalOrderAmount(processedOrder.totalAmount);
-      this.outputView.printGiftMenu(benefits.giftMenu);
-      this.outputView.printBenefits(benefits.benefitDetails);
-      this.outputView.printTotalBenefitsAmount(benefits.totalBenefitsAmount);
-      this.outputView.printFinalAmount(benefits.finalAmount);
-      this.outputView.printEventBadge(benefits.totalBenefitsAmount)
+      this.displayOutput(date, order, processedOrder, benefits);
     } catch (error) {
       console.error(error);
     }
   }
+
+  displayOutput(date, order, processedOrder, benefits) {
+    this.outputView.printIntroduction(date, order);
+    this.outputView.printMenu(processedOrder.menu);
+    this.outputView.printTotalOrderAmount(processedOrder.totalAmount);
+    this.outputView.printGiftMenu(benefits.giftMenu);
+    this.outputView.printBenefits(benefits.benefitDetails);
+    this.outputView.printTotalBenefitsAmount(benefits.totalBenefitsAmount);
+    this.outputView.printFinalAmount(benefits.finalAmount);
+    this.outputView.printEventBadge(benefits.totalBenefitsAmount)
+  };
 
   calculateTotalAmount(order) {
     return order.reduce((total, item) => {
@@ -43,40 +47,58 @@ class App {
   }  
 
   calculateBenefits(date, order, totalAmount) {
-    let totalDiscount = 0;
-    let giftMenu = [];
-    let benefitDetails = [];
-
-    const christmasDiscount = BenefitsCalculator.calculateChristMasDiscount(date);
-    const weekdayDiscount = BenefitsCalculator.calculateWeekdayDiscount(date, order);
-    const weekendDiscount = BenefitsCalculator.calculateWeekendDiscount(date, order);
-    const specialDiscount = BenefitsCalculator.calculateSpecialDiscount(date);
-
-    totalDiscount += christmasDiscount + weekdayDiscount + weekendDiscount + specialDiscount;
-
-    if (christmasDiscount > 0) benefitDetails.push({ description: "크리스마스 디데이 할인", amount: christmasDiscount});
-    if (weekdayDiscount > 0) benefitDetails.push({ description: "평일 할인", amount: weekdayDiscount});
-    if (weekendDiscount > 0) benefitDetails.push({ description: "주말 할인", amount: weekendDiscount});
-    if (specialDiscount > 0) benefitDetails.push({ description: "특별 할인", amount: specialDiscount});
-
-    let champagnePrice = 0;
-    if (totalAmount >= 120000) {
-      giftMenu.push({ name: "샴페인", quantity: 1 });
-      champagnePrice = 25000;
-      benefitDetails.push({ description: "증정 이벤트", amount: 25000 });
-      totalDiscount += champagnePrice;
-    }
-
-    let finalAmount = totalAmount - totalDiscount + champagnePrice;
+    const discounts = this.calculateAllDiscounts(date, order);
+    const giftMenu = this.calculateGiftMenu(totalAmount);
+    const totalDiscount = discounts.reduce((total, discount) => total + discount.amount, 0);
+    const finalAmount = totalAmount - totalDiscount;
 
     return {
       giftMenu: giftMenu,
-      benefitDetails: benefitDetails,
+      benefitDetails: discounts,
       totalBenefitsAmount: totalDiscount,
       finalAmount: finalAmount
     };
   }
-}
 
+  calculateAllDiscounts(date, order) {
+    let discounts = [];
+
+    discounts.push(this.calculateChristMasDiscount(date));
+    discounts.push(this.calculateWeekdayDiscount(date, order));
+    discounts.push(this.calculateWeekendDiscount(date, order));
+    discounts.push(this.calculateSpecialDiscount(date));
+
+    return discounts.filter(discount => discount.amount > 0);
+  }
+
+  calculateChristMasDiscount(date) {
+    const discount = BenefitsCalculator.calculateChristMasDiscount(date);
+    return { description: "크리스마스 디데이 할인", amount: discount };
+  }
+
+  calculateWeekdayDiscount(date, order) {
+    const discount = BenefitsCalculator.calculateWeekdayDiscount(date, order);
+    return { description: "평일 할인", amount: discount };
+  }
+
+  calculateWeekendDiscount(date, order) {
+    const discount = BenefitsCalculator.calculateWeekendDiscount(date, order);
+    return { description: "주말 할인", amount: discount };
+  }
+
+  calculateSpecialDiscount(date) {
+    const discount = BenefitsCalculator.calculateSpecialDiscount(date);
+    return { description: "특별 할인", amount: discount };
+  }
+
+  calculateGiftMenu(totalAmount) {
+    let giftMenu = [];
+    if (totalAmount >= 120000) {
+      giftMenu.push({ name: "샴페인", quantity: 1 });
+    }
+    return giftMenu;
+  }
+  
+}
 
 export default App;
