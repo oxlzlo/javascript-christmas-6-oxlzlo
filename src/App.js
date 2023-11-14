@@ -1,6 +1,6 @@
 import InputView from './InputView.js';
 import OutputView from './OutputView.js';
-import menuPrices from './MenuPrices.js';
+import { menuPrices } from './MenuPrices.js';
 import * as BenefitsCalculator from './BenefitsCalculator.js';
 
 class App {
@@ -47,6 +47,27 @@ class App {
   }  
 
   calculateBenefits(date, order, totalAmount) {
+    if (!this.isEligibleForBenefits(totalAmount)) {
+      return this.noBenefits(totalAmount);
+    }
+
+    return this.applyDiscountsAndBenefits(date, order, totalAmount);
+  }
+
+  isEligibleForBenefits(totalAmount) {
+    return totalAmount >= 10000;
+  }
+
+  noBenefits(totalAmount) {
+    return {
+      giftMenu: [],
+      benefitDetails: [],
+      totalBenefitsAmount: 0,
+      finalAmount: totalAmount
+    };
+  }
+  
+  applyDiscountsAndBenefits(date, order, totalAmount) {
     const discounts = this.calculateAllDiscounts(date, order);
     const giftMenu = this.calculateGiftMenu(totalAmount);
     const totalDiscount = discounts.reduce((total, discount) => total + discount.amount, 0);
@@ -98,7 +119,7 @@ class App {
     }
     return giftMenu;
   }
-  
+
 }
 
 export default App;

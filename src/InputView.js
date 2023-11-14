@@ -1,5 +1,5 @@
 import { MissionUtils } from "@woowacourse/mission-utils";
-import menuPrices from "./MenuPrices";
+import { menuPrices, isFoodItem } from "./MenuPrices";
 
 const InputView = {
   async readDate() {
@@ -17,14 +17,17 @@ const InputView = {
 
   async readOrder() {
     let order;
+    let isValid = false;
+
     do {
       const input = await MissionUtils.Console.readLineAsync("주문할 메뉴를 입력해 주세요 (e.g. 해산물파스타-2,레드와인-1,초코케이크-1)");
       order = this.parseOrderInput(input);
 
-      if (!order || !this.isValidOrder(order)) {
+      isValid = this.isValidOrder(order);
+      if (!isValid) {
         MissionUtils.Console.print("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
       }
-    } while (!order || !this.isValidOrder(order));
+    } while (!isValid);
 
     return order;
   },
@@ -42,12 +45,21 @@ const InputView = {
   },
 
   isValidOrder(order) {
+    const totalItems = order.reduce((sum, item) => sum + item.quantity, 0);
+    if (totalItems > 20) {
+      return false;
+    }
+
     const menuNames = order.map(item => item.name);
     const uniqueMenuNames = new Set(menuNames);
     if (uniqueMenuNames.size !== menuNames.length) {
       return false;
     }
 
+    const containsFood = order.some(item => isFoodItem[item.name]);
+    if (!containsFood) {
+      return false;
+    }
     return order.every(item => 
       item.name && !isNaN(item.quantity) && item.quantity >=1 && menuPrices.hasOwnProperty(item.name));
   }
