@@ -45,24 +45,34 @@ const InputView = {
   },
 
   isValidOrder(order) {
-    const totalItems = order.reduce((sum, item) => sum + item.quantity, 0);
-    if (totalItems > 20) {
-      return false;
-    }
+    return this.isTotalItemsValid(order) && this.isNoDuplicateMenu(order) && this.containsFoodItem(order) && this.areAllItemsValid(order);
+    },
 
+  isTotalItemsValid(order) {
+    const totalItems = order.reduce((sum, item) => sum + item.quantity, 0);
+    return totalItems <= 20;
+  },
+
+  isNoDuplicateMenu(order) {
     const menuNames = order.map(item => item.name);
     const uniqueMenuNames = new Set(menuNames);
-    if (uniqueMenuNames.size !== menuNames.length) {
-      return false;
-    }
+    return uniqueMenuNames.size === menuNames.length
+  },
 
-    const containsFood = order.some(item => isFoodItem[item.name]);
-    if (!containsFood) {
-      return false;
-    }
-    return order.every(item => 
-      item.name && !isNaN(item.quantity) && item.quantity >=1 && menuPrices.hasOwnProperty(item.name));
+  containsFoodItem(order) {
+    return order.some(item => isFoodItem[item.name]);
+  },
+
+  areAllItemsValid(order) {
+    return order.every(item =>
+      item.name && !isNaN(item.quantity) && item.quantity >=1 && menuPrices.hasOwnProperty(item.name)
+      );
   }
+
+
+
+
+
 };
 
 export default InputView;
