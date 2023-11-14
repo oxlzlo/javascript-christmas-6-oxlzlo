@@ -46,7 +46,7 @@ const InputView = {
 
   isValidOrder(order) {
     return this.isTotalItemsValid(order) && this.isNoDuplicateMenu(order) && this.containsFoodItem(order) && this.areAllItemsValid(order);
-    },
+  },
 
   isTotalItemsValid(order) {
     const totalItems = order.reduce((sum, item) => sum + item.quantity, 0);
@@ -68,11 +68,6 @@ const InputView = {
       item.name && !isNaN(item.quantity) && item.quantity >=1 && menuPrices.hasOwnProperty(item.name)
       );
   }
-
-
-
-
-
 };
 
 export default InputView;

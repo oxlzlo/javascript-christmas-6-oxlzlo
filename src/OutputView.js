@@ -10,7 +10,6 @@ const OutputView = {
     const orderString = order.map(item => `${item.name}-${item.quantity}`).join(',');
     MissionUtils.Console.print(orderString);
     MissionUtils.Console.print(`\n12월 ${date}일에 우테코 식당에서 받을 이벤트 혜택 미리 보기!\n`)
-
   },
 
 
@@ -52,7 +51,6 @@ const OutputView = {
     MissionUtils.Console.print("\n<총혜택 금액>\n");
     const formattedAmount = totalBenefitsAmount === 0 ? "0원" : `-${formatAmount(totalBenefitsAmount)}원`;
     MissionUtils.Console.print(formattedAmount)
-    
   },
 
   printFinalAmount(finalAmount) {
@@ -74,7 +72,6 @@ const OutputView = {
 
     MissionUtils.Console.print(badgeName);
   }
-
 };
 
 export default OutputView;

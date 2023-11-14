@@ -28,4 +28,4 @@ export {
     calculateWeekdayDiscount,
     calculateWeekendDiscount,
     calculateSpecialDiscount
-}
+};
