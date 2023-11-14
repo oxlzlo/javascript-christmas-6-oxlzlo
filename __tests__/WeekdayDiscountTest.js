@@ -31,7 +31,7 @@ describe ('App', () => {
         it('평일에 메인 메뉴는 할인 적용 없음', () => {
             const app = new App();
 
-            const testDates = [8, 16, 23];
+            const testDates = [5, 20, 27];
             const expectedDiscount = 0;
             const order = [{ name: "티본스테이크", quantity: 1 }];
 
