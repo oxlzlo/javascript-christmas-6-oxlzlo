@@ -56,5 +56,15 @@ describe ('App', () => {
             const order = await app.inputView.readOrder(inputOrder);
             expect(order).toBe("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
         });
+
+        it ('주문 수량을 입력하지 않은 경우 에러 발생', async () => {
+            const app = new App();
+
+            const inputOrder = ["바비큐립-1", "제로콜라"];
+            InputView.readOrder.mockResolvedValue("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
+
+            const order = await app.inputView.readOrder(inputOrder);
+            expect(order).toBe("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.");
+        });
     }); 
 });
