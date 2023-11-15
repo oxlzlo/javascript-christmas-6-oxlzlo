@@ -1,5 +1,5 @@
 import { MissionUtils } from "@woowacourse/mission-utils";
-import { menuPrices, isFoodItem } from "./MenuPrices";
+import { menuPrices, isFoodItem } from "../domain/menuPrices.js";
 
 const InputView = {
   async readDate() {

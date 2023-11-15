@@ -1,7 +1,7 @@
-import InputView from './InputView.js';
-import OutputView from './OutputView.js';
-import { menuPrices } from './MenuPrices.js';
-import * as BenefitsCalculator from './BenefitsCalculator.js';
+import InputView from './ui/InputView.js';
+import OutputView from './ui/OutputView.js';
+import { menuPrices } from './domain/menuPrices.js';
+import * as BenefitsCalculator from './domain/BenefitsCalculator.js'
 
 class App {
   constructor() {

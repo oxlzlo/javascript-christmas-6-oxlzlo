@@ -1,7 +1,7 @@
 import App from "../src/App";
-import InputView from "../src/InputView";
+import InputView from "../src/ui/InputView";
 
-jest.mock('../src/InputView.js', () => ({
+jest.mock('../src/ui/InputView.js', () => ({
     readDate: jest.fn()
 }));
 
